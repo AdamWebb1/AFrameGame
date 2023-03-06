@@ -16,6 +16,10 @@
 					type: 'int',
 					default: 0
 					},
+					timeLeft:{
+						type: 'float',
+						default: 10.00
+					}
 				},
 
 				init: function () {
@@ -35,7 +39,14 @@
 					})
 				},
 				tick: function() {
+					var timer = document.querySelector('#timer');
+
+					this.data.timeLeft -= 0.01;
 					
+					var formattedTime = this.data.timeLeft.toString().replace(".", ":")
+
+					timer.setAttribute('text', 'value',  formattedTime)
+					// console.log(formattedTime)
 				}
 				});
 
@@ -46,7 +57,8 @@
 		<a-scene game>
 			<a-sphere id = "target" color="#FF9500" position="0 2 -10"></a-sphere>
 			<a-entity id = "score" text="value: Hello World" scale="20 20 20" position="3 2 -10"></a-entity>
-			
+			<a-entity id = "timer" text="value: 10:00" scale="20 20 20" position="12 2 -10"></a-entity>
+			<a-entity id = "game_over" text="GAME OVER" scale="30 30 30" position="12 2 -10"></a-entity>
 			
 			<a-sky color="#DDDDDD"></a-sky>
 			<a-light type="directional" color="#FFF" intensity="0.5" position="-1 1 2"></a-light>
