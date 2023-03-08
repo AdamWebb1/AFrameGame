@@ -10,15 +10,23 @@
 			AFRAME.registerComponent('game', {
 				schema: {
 					el: {
-					type: 'selector'
+						type: 'selector'
 					},
 					score:{
-					type: 'int',
-					default: 0
+						type: 'int',
+						default: 0
 					},
-					timeLeft:{
+					startTime:{
 						type: 'float',
-						default: 10.00
+						default: (Date.now() / 1000)
+					},
+					gameLength:{
+						type: 'float',
+						default: 10
+					},
+					gameOver:{
+						type: 'boolean',
+						default: false
 					}
 				},
 
@@ -32,21 +40,31 @@
 						var newScore = 'Score: ' + this.data.score
 						scoreBoard.setAttribute('text', 'value',  newScore)
 						
-						var newPosition = Math.floor(Math.random() * 5) + ' ' + Math.floor(Math.random() * 5) + ' ' + -10
-						console.log(newPosition)
-						target.setAttribute('position', newPosition)
+						// var newPosition = Math.floor(Math.random() * 5) + ' ' + Math.floor(Math.random() * 5) + ' ' + -10
+						// console.log(newPosition)
+						// target.setAttribute('position', newPosition)
 
 					})
 				},
 				tick: function() {
 					var timer = document.querySelector('#timer');
+					var controls = document.querySelector('#camera')
 
-					this.data.timeLeft -= 0.01;
+					var timeRemaining = 0.0;					
+
+					if (!this.data.gameOver){
+						timeRemaining = (this.data.startTime + this.data.gameLength - (Date.now() / 1000))
+					}
 					
-					var formattedTime = this.data.timeLeft.toString().replace(".", ":")
-
-					timer.setAttribute('text', 'value',  formattedTime)
-					// console.log(formattedTime)
+					if (timeRemaining < 0){
+						this.data.gameOver = true;
+						var gameOver = document.querySelector("#game_over")
+						gameOver.setAttribute('visible', 'value', true)
+						gameOver.setAttribute('text', 'value', 'GAME OVER,\n​ You scored:\n​          ' + this.data.score)
+						
+					} else {
+						timer.setAttribute('text', 'value',  Math.round(timeRemaining * 100) / 100)
+					}
 				}
 				});
 
@@ -56,15 +74,16 @@
 	<body>
 		<a-scene game>
 			<a-sphere id = "target" color="#FF9500" position="0 2 -10"></a-sphere>
-			<a-entity id = "score" text="value: Hello World" scale="20 20 20" position="3 2 -10"></a-entity>
+			<a-entity id = "score" text="value: Score: 0" scale="20 20 20" position="3 2 -10"></a-entity>
 			<a-entity id = "timer" text="value: 10:00" scale="20 20 20" position="12 2 -10"></a-entity>
-			<a-entity id = "game_over" text="GAME OVER" scale="30 30 30" position="12 2 -10"></a-entity>
+			
+			<a-entity id = "game_over" text="value: GAME OVER; color: red; allign: center" scale="30 30 30" position="11 2 -9" visible="false"></a-entity>
 			
 			<a-sky color="#DDDDDD"></a-sky>
 			<a-light type="directional" color="#FFF" intensity="0.5" position="-1 1 2"></a-light>
 			<a-light type="ambient" color="#FFF"></a-light>
 			<a-entity camera="userHeight: 1.6" look-controls cursor="rayOrigin: mouse"></a-entity>
-			<a-camera wasd-controls-enabled="true" look-controls="pointerLockEnabled: true;"> -->
+			<a-camera id = "camera" wasd-controls-enabled="true" look-controls="pointerLockEnabled: true;"> -->
 				<a-cursor></a-cursor>
 			</a-camera>
 			
