@@ -22,11 +22,11 @@
 					},
 					gameLength:{
 						type: 'float',
-						default: 1
+						default: 10
 					},
 					gameOver:{
 						type: 'boolean',
-						default: false
+						default: true
 					}
 				},
 
@@ -34,6 +34,7 @@
 					var sceneEl = document.querySelector('a-scene'); 
 					var scoreBoard = document.querySelector('#score');
 					var target = document.querySelector('#target')
+					var gameOver = document.querySelector("#game_over")
 
 					sceneEl.querySelector('a-sphere').addEventListener('click', () => {
 
@@ -43,7 +44,9 @@
 							this.data.score = 0
 							var newScore = 'Score: ' + this.data.score
 							scoreBoard.setAttribute('text', 'value',  newScore)
-							console.log("setting score to zero")
+							console.log("set score to zero")
+							gameOver.setAttribute('visible', 'false')
+							
 
 						}
 						else {
@@ -52,9 +55,9 @@
 							var newScore = 'Score: ' + this.data.score
 							scoreBoard.setAttribute('text', 'value',  newScore)
 							
-							// var newPosition = Math.floor(Math.random() * 5) + ' ' + Math.floor(Math.random() * 5) + ' ' + -10
-							// console.log(newPosition)
-							// target.setAttribute('position', newPosition)
+							var newPosition = Math.floor(Math.random() * 5 - 2.5) + ' ' + Math.floor(Math.random() * 5 - 2.5) + ' ' + -10
+							console.log(newPosition)
+							target.setAttribute('position', newPosition)
 						}
 
 					})
@@ -76,28 +79,17 @@
 					if (timeRemaining < 0){
 						console.log("Game over")
 						this.data.gameOver = true;
+						gameOver.setAttribute('visible', 'true')
 						gameOver.setAttribute('text', 'value', 'GAME OVER,\n​ You scored:\n​          ' + this.data.score)
-						// target.setAttribute('visible', false)
-						score.setAttribute('visible', false)
-						timer.setAttribute('visible', false)
+						target.setAttribute('position', '0 -5 -20')
+						score.setAttribute('visible', 'false')
+						timer.setAttribute('visible', 'false')
 					
 					} 
 					
 					else {
 						timer.setAttribute('text', 'value',  Math.round(timeRemaining * 100) / 100)
 					}
-
-					if (this.data.gameOver){
-						// gameOver.setAttribute('text', 'value', '')
-						// target.setAttribute('visible', false)
-						score.setAttribute('visible', true)
-						timer.setAttribute('visible', true)
-
-
-					}
-
-					
-					
 				}
 				});
 
@@ -110,6 +102,7 @@
 			<a-entity id = "score" text="value: Score: 0" scale="20 20 20" position="3 2 -10" visible='true'></a-entity>
 			<a-entity id = "timer" text="value: 10:00" scale="20 20 20" position="12 2 -10" visible="true"></a-entity>
 			<a-entity id = "game_over" text="value: ; color: red; allign: center" scale="30 30 30" position="11 2 -9" visible="false"></a-entity>
+			<a-entity id = "high_score" text="value: ; color: green; allign: center" scale="20 20 20" position="11 -2 -9" visible="true"></a-entity>
 			
 			<a-sky color="#DDDDDD"></a-sky>
 			<a-light type="directional" color="#FFF" intensity="0.5" position="-1 1 2"></a-light>
